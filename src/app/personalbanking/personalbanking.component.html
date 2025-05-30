@@ -1,0 +1,129 @@
+<div class="container">
+  <h2>Branch Banking Employee Details</h2>
+
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+
+    <!-- Personal Details -->
+    <fieldset formGroupName="personalDetails">
+      <legend>Personal Details</legend>
+
+      <label>Name:</label>
+      <input formControlName="name" type="text" />
+
+      <label>Email ID:</label>
+      <input formControlName="email" type="email" />
+
+      <label>Contact Number:</label>
+      <input formControlName="contact" type="tel" />
+
+      <label>Date of Birth:</label>
+      <input formControlName="dob" type="date" />
+
+      <label>Gender:</label>
+      <select formControlName="gender">
+        <option value="">Select</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label>Marital Status:</label>
+      <select formControlName="maritalStatus">
+        <option value="">Select</option>
+        <option>Single</option>
+        <option>Married</option>
+        <option>Widow</option>
+        <option>Widower</option>
+      </select>
+
+      <label>Guardian Name:</label>
+      <input formControlName="guardianName" type="text" />
+
+      <label>Pan Card:</label>
+      <select formControlName="panAvailable">
+        <option>No</option>
+        <option>Yes</option>
+      </select>
+      <div *ngIf="employeeForm.get('personalDetails.panAvailable')?.value === 'Yes'">
+        <label>PAN Card Number:</label>
+        <input formControlName="panNumber" type="text" />
+      </div>
+
+      <label>Aadhar Card:</label>
+      <select formControlName="aadharAvailable">
+        <option>No</option>
+        <option>Yes</option>
+      </select>
+      <div *ngIf="employeeForm.get('personalDetails.aadharAvailable')?.value === 'Yes'">
+        <label>Aadhar Card Number:</label>
+        <input formControlName="aadharNumber" type="text" />
+      </div>
+    </fieldset>
+
+    <!-- Academic Qualification -->
+    <fieldset formGroupName="academicQualifications">
+      <legend>Academic Qualifications</legend>
+
+      <div formArrayName="qualifications">
+        <div *ngFor="let q of qualifications.controls; let i = index" [formGroupName]="i" class="qualification-row">
+          <label>Course:</label>
+          <input formControlName="course" type="text" />
+          <label>Year:</label>
+          <input formControlName="year" type="text" />
+          <label>Institution:</label>
+          <input formControlName="institution" type="text" />
+          <label>Marks %:</label>
+          <input formControlName="marks" type="text" />
+        </div>
+      </div>
+      <button type="button" (click)="addQualification()">+ Add More</button>
+
+      <label>Other Qualification:</label>
+      <input formControlName="otherQualification" type="text" />
+
+      <label>Languages Known:</label>
+      <div formGroupName="languages">
+        <input formControlName="speak" placeholder="To Speak" type="text" />
+        <input formControlName="read" placeholder="To Read" type="text" />
+        <input formControlName="write" placeholder="To Write" type="text" />
+      </div>
+
+      <label>Special Skills and Hobbies:</label>
+      <input formControlName="skillsHobbies" type="text" />
+
+      <label>Work Experience:</label>
+      <input formControlName="experience" type="text" />
+    </fieldset>
+
+    <!-- HR Assigned Info -->
+    <fieldset formGroupName="hrDetails">
+      <legend>HR Assigned Information</legend>
+
+      <label>Designation:</label>
+      <input formControlName="designation" type="text" />
+
+      <label>Employee Type:</label>
+      <select formControlName="employeeType">
+        <option>Fulltime</option>
+        <option>Parttime</option>
+        <option>Intern</option>
+        <option>Trainee</option>
+      </select>
+
+      <label>Salary:</label>
+      <input formControlName="salary" type="number" />
+
+      <label>Employee Grade:</label>
+      <input formControlName="grade" type="text" />
+
+
+      <label>Employee ID:</label>
+      <input formControlName="employeeId"  readonly /> 
+      <button (click)="generateEmployeeId()" type="button">Generate Id</button>
+
+     
+    </fieldset>
+
+    <button type="submit">Submit</button>
+  </form>
+</div>

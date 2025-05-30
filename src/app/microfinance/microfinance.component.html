@@ -1,0 +1,32 @@
+<div class="microfinance-container">
+  <h2>Microfinance Employee Details</h2>
+  <form [formGroup]="microfinanceForm" (ngSubmit)="onSubmit()">
+    <label>Name:</label>
+    <input type="text" formControlName="name" />
+
+    <label>Email:</label>
+    <input type="email" formControlName="email" />
+
+    <label>Contact Number:</label>
+    <input type="tel" formControlName="contactNumber" />
+
+    <label>Date of Birth:</label>
+    <input type="date" formControlName="dateOfBirth" />
+
+    <label>Gender:</label>
+    <select formControlName="gender">
+      <option value="">Select</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label>Designation:</label>
+    <input type="text" formControlName="designation" />
+
+    <label>Salary:</label>
+    <input type="number" formControlName="salary" />
+
+    <button type="submit">Submit</button>
+  </form>
+</div>

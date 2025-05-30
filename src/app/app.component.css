@@ -1,0 +1,45 @@
+/* Set full viewport */
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Header and Footer */
+app-header,
+app-footer {
+  flex-shrink: 0;
+}
+
+/* Main container (sidebar + content) */
+.main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sidebar */
+app-sidebar {
+  width: 200px;
+  background-color: #0b2240;
+  color: white;
+  flex-shrink: 0;
+}
+
+/* Main content */
+.content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  
+}
+
+/* Scrollable content area */
+.router-pane {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background-color: #f0f2f5;
+
+}
