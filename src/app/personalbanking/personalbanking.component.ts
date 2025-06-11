@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { personalService } from './personalbanking.service';
 import { HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-personalbanking',
@@ -12,51 +14,126 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [personalService]
 })
 export class PersonalbankingComponent {
+  
+  
   employeeForm!: FormGroup;
+  actiontype = 'create';
+  employeeId :any;
 
-  constructor(private fb: FormBuilder,
-    private personalService: personalService
+
+  constructor(
+    private route: ActivatedRoute,
+    private fb: FormBuilder,
+    private personalService: personalService,
+    private router: Router
   ) { }
 
-  ngOnInit(): void {
-    this.employeeForm = this.fb.group({
-      personalDetails: this.fb.group({
-        name: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email]],
-        contact: ['', Validators.required],
-        dob: ['', Validators.required],
-        gender: [''],
-        maritalStatus: [''],
-        guardianName: [''],
-        panAvailable: ['No'],
 
-        panNumber: [''],
-        aadharAvailable: ['No'],
-        aadharNumber: ['']
+ ngOnInit(): void {
+  this.employeeId = this.route.snapshot.paramMap.get('id');
+  console.log(this.employeeId);
+
+  // Initialize the form first
+  this.employeeForm = this.fb.group({
+    personalDetails: this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      contact: ['', Validators.required],
+      dob: ['', Validators.required],
+      gender: ['', Validators.required],
+      maritalStatus: ['', Validators.required],
+      guardianName: ['', Validators.required],
+      panAvailable: ['No', Validators.required],
+      panNumber: [''],
+      aadharAvailable: ['No', Validators.required],
+      aadharNumber: ['']
+    }),
+    academicQualifications: this.fb.group({
+      qualifications: this.fb.array([this.createQualification()]),
+      otherQualification: ['', Validators.required],
+      languages: this.fb.group({
+        speak: ['', Validators.required],
+        read: ['', Validators.required],
+        write: ['', Validators.required]
       }),
-      academicQualifications: this.fb.group({
-        qualifications: this.fb.array([this.createQualification()]),
-        otherQualification: [''],
-        languages: this.fb.group({
-          speak: [''],
-          read: [''],
-          write: ['']
-        }),
-        skillsHobbies: [''],
-        experience: ['']
-      }),
-      hrDetails: this.fb.group({
-        designation: [''],
-        employeeType: [''],
-        salary: [''],
-        grade: [''],
-        employeeId: ['']
-      })
+      skillsHobbies: ['', Validators.required],
+      experience: ['', Validators.required]
+    }),
+    hrDetails: this.fb.group({
+      designation: ['', Validators.required],
+      employeeType: ['', Validators.required],
+      salary: ['', Validators.required],
+      grade: ['', Validators.required],
+      employeeId: ['', Validators.required]
+    })
+  });
+
+  // Patch data if in update mode
+  if (this.employeeId) {
+    this.personalService.getEmployeeById(this.employeeId).subscribe((data) => {
+      console.log(data);
+      this.populateForm(data);
+      this.actiontype = 'update';
+    });
+  }
+
+  // Set conditional validators
+  this.onPanChange();
+  this.onAadharChange();
+}
+
+
+  populateForm(data: any) {
+    // Patch everything except the qualifications array
+    this.employeeForm.patchValue({
+      personalDetails: {
+        name: data.name,
+        email: data.email,
+        contact: data.contact,
+        dob: data.dateOfBirth?.split('T')[0],
+        gender: data.gender,
+        maritalStatus: data.maritalStatus,
+        guardianName: data.guardianName,
+        panAvailable: data.panAvailable ? 'Yes' : 'No',
+        panNumber: data.panNumber,
+        aadharAvailable: data.aadharAvailable ? 'Yes' : 'No',
+        aadharNumber: data.aadharNumber
+      },
+      academicQualifications: {
+        otherQualification: data.otherQualification,
+        languages: {
+          speak: data.languagesKnown?.speak,
+          read: data.languagesKnown?.read,
+          write: data.languagesKnown?.write
+        },
+        skillsHobbies: data.skillsHobbies,
+        experience: data.experience
+      },
+      hrDetails: {
+        designation: data.designation,
+        employeeType: data.employeeType,
+        salary: data.salary,
+        grade: data.grade,
+        employeeId: data.employeeId
+      }
     });
 
-    this.onPanChange();
-    this.onAadharChange();
+    // Clear and re-add qualifications
+    this.qualifications.clear(); // Remove existing blank row
+
+    data.qualifications.forEach((q: any) => {
+      this.qualifications.push(this.fb.group({
+        course: [q.courseName],
+        year: [q.yearOfPassing],
+        institution: [q.institutionName],
+        marks: [q.marksPercentage]
+      }));
+    });
+    
   }
+  
+
+
 
   createQualification(): FormGroup {
     return this.fb.group({
@@ -74,6 +151,13 @@ export class PersonalbankingComponent {
   addQualification(): void {
     this.qualifications.push(this.createQualification());
   }
+
+  removeQualification(index: number): void {
+  this.qualifications.removeAt(index);
+}
+
+
+
 
   onPanChange(): void {
     this.employeeForm.get('personalDetails.panAvailable')?.valueChanges.subscribe(value => {
@@ -107,6 +191,7 @@ export class PersonalbankingComponent {
   }
 
   onSubmit(): void {
+    this,this.employeeForm.markAllAsTouched();
     if (this.employeeForm.valid) {
       const formValue = this.employeeForm.value;
 
@@ -142,21 +227,50 @@ export class PersonalbankingComponent {
       };
 
       console.log('Final Payload:', payload);
+      if (this.actiontype == 'create') {
 
-      this.personalService.postpersonalbanking(payload).subscribe(
-        (resp: any) => {
-          console.log(resp);
-          alert('Form submitted successfully!');
-        },
-        (error) => {
-          console.error('Submission failed:', error);
-          alert('Submission failed!');
-        }
-      );
-    } else {
+        this.personalService.postpersonalbanking(payload).subscribe(
+          (resp: any) => {
+            console.log(resp);
+            alert('Form submitted successfully!');
+             this.router.navigate(['/branchbanking']);
+          },
+          (error) => {
+            console.error('Submission failed:', error);
+            alert('Submission failed!');
+          }
+        )
+      } else if (this.actiontype == 'update') {
+        this.personalService.updateEmployee(this.employeeId, payload ).subscribe(
+          (resp: any) =>{
+            console.log(resp);
+            alert('from submitted successfully!');
+            // Navigate back to branch banking page
+            this.router.navigate(['/branchbanking']);
+          },
+          (error) => {
+            console.error('Submission failed:', error);
+            alert('Submission failed!');
+          }
+          
+        )
+
+      };
+    }
+    
+    else {
+
+      
       alert('Please fill all required fields correctly.');
     }
+
   }
 
 
+get personalDetails() {
+  return this.employeeForm.get('personalDetails') as FormGroup;
 }
+
+}
+
+

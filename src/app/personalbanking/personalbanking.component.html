@@ -12,6 +12,7 @@
 
       <label>Email ID:</label>
       <input formControlName="email" type="email" />
+      <span *ngIf="personalDetails.get('email')?.touched && personalDetails.get('email')?.errors?.['required']">Email Id is required</span>
 
       <label>Contact Number:</label>
       <input formControlName="contact" type="tel" />
@@ -73,7 +74,8 @@
           <label>Institution:</label>
           <input formControlName="institution" type="text" />
           <label>Marks %:</label>
-          <input formControlName="marks" type="text" />
+          <input formControlName="marks" type="number" />
+          <button type="button" (click)="removeQualification(i)" *ngIf="qualifications.length > 1">🗑 Delete</button>
         </div>
       </div>
       <button type="button" (click)="addQualification()">+ Add More</button>
@@ -119,11 +121,14 @@
 
       <label>Employee ID:</label>
       <input formControlName="employeeId"  readonly /> 
-      <button (click)="generateEmployeeId()" type="button">Generate Id</button>
+      <button *ngIf="actiontype == 'create' " (click)="generateEmployeeId()" type="button">Generate Id</button>
 
      
     </fieldset>
 
-    <button type="submit">Submit</button>
+    <button type="submit">
+  {{ actiontype === 'update' ? 'Update' : 'Submit' }}
+</button>
+
   </form>
 </div>

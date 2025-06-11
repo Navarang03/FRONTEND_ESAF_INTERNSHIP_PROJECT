@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 
-export class personalService {
+export class branchService {
 
     constructor(private httpClient: HttpClient) { }
 
@@ -13,18 +13,11 @@ export class personalService {
 
      getersonalbanking() {
         return this.httpClient.get('http://localhost:5000/api/employee')
-     } 
-    
-    getEmployeeById(employeeId: string) {
-    return this.httpClient.get(`http://localhost:5000/api/Employee/${employeeId}`);
     }
 
-    updateEmployee(employeeId: string, payload: any) {
-    return this.httpClient.put(`http://localhost:5000/api/Employee/${employeeId}`, payload);
-    }
-
-
-
+    deleteEmployee(employeeId: string){
+  return this.httpClient.delete(`http://localhost:5000/api/employee/${employeeId}`);
+}
 
 
 }

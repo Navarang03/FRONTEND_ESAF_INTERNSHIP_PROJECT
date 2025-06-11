@@ -2,14 +2,21 @@
 
   <header>
     <div class="logo">
-      <div class="logo-icon">EB</div>
-      <div class="logo-text">ESAF Bank</div>
+      <div class="logo-icon">
+  <img src="assets/ESAFlogo.jpg" alt="ESAF Logo" class="logo-img" />
+</div>
+<div class="logo-text">ESAF Bank</div>
+ <!-- <span class="logo-text">ESAF Bank</span> -->
+
+
     </div>
     <nav class="nav-links">
-      <a href="#">Home</a>
-      <a href="#">Employees</a>
-      <a href="#">Departments</a>
-      <a href="#">Contact</a>
+      <!-- <a href="#">Home</a>
+      <a href="#">Signup</a>
+      <a href="#">Departments</a> -->
+
+      <a (click)="logout()" href="#">Logout</a>
+      <a>{{name}}</a>
     </nav>
   </header>
 

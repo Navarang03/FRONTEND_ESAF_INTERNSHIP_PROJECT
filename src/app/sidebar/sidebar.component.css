@@ -1,7 +1,7 @@
 .sidebar {
-  width: 240px;
+  width: 250px;
   height: 100vh;
-  background-color: darkblue;
+  background-color: rgb(4, 4, 117);
   color: white;
   padding: 20px;
   box-sizing: border-box;
@@ -36,6 +36,6 @@
 
 .sidebar ul li:hover,
 .sidebar ul li.active {
-  background-color: red;
+  background: linear-gradient(135deg, red, rgb(29, 29, 221));
   color: white;
 }

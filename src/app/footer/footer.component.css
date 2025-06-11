@@ -1,5 +1,5 @@
 .footer {
-  background-color: #0b2240; /* Dark Blue */
+  background-color: #030930; /* Dark Blue */
   color: white;
   font-size: 14px;
   text-align: center;
@@ -9,10 +9,13 @@
   width: 100%;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   z-index: 10;
+  height: 30px;
 }
 
-.footer-content {
-  margin: 0 auto;
-  max-width: 1200px;
-  padding: 0 20px;
+p{
+  display: flex;
+  margin-top: 5px;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
 }
